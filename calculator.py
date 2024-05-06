@@ -1,61 +1,46 @@
 import tkinter as tk
 
-def add():
-    try:
-        result.set(float(num1.get()) + float(num2.get()))
-    except ValueError:
-        result.set("Error")
+# Function to update the display when a button is clicked
+def button_click(symbol):
+    current = display_var.get()
+    if current == "Error":
+        current = ""
+    if symbol == "=":
+        try:
+            result = str(eval(current))
+        except:
+            result = "Error"
+        display_var.set(result)
+    elif symbol == "C":
+        display_var.set("")
+    else:
+        display_var.set(current + symbol)
 
-def subtract():
-    try:
-        result.set(float(num1.get()) - float(num2.get()))
-    except ValueError:
-        result.set("Error")
-
-def multiply():
-    try:
-        result.set(float(num1.get()) * float(num2.get()))
-    except ValueError:
-        result.set("Error")
-
-def divide():
-    try:
-        if float(num2.get()) == 0:
-            result.set("Error! Division by zero")
-        else:
-            result.set(float(num1.get()) / float(num2.get()))
-    except ValueError:
-        result.set("Error")
-
-def clear():
-    num1.set("")
-    num2.set("")
-    result.set("")
-
-# Create main window
+# Create the main window
 root = tk.Tk()
 root.title("Simple Calculator")
 
-# Variables to store input and result
-num1 = tk.StringVar()
-num2 = tk.StringVar()
-result = tk.StringVar()
+# Create a variable to hold the display value
+display_var = tk.StringVar()
+display_var.set("")
 
-# Entry widgets for numbers and result
-tk.Label(root, text="Enter first number:").grid(row=0, column=0)
-tk.Entry(root, textvariable=num1).grid(row=0, column=1)
-tk.Label(root, text="Enter second number:").grid(row=1, column=0)
-tk.Entry(root, textvariable=num2).grid(row=1, column=1)
-tk.Label(root, text="Result:").grid(row=2, column=0)
-tk.Entry(root, textvariable=result, state='readonly').grid(row=2, column=1)
+# Create the display
+display = tk.Entry(root, textvariable=display_var, font=("Arial", 18), bd=10, insertwidth=4, width=15, justify="right")
+display.grid(row=0, column=0, columnspan=4)
 
-# Buttons for arithmetic operations
-tk.Button(root, text="Add", command=add).grid(row=3, column=0)
-tk.Button(root, text="Subtract", command=subtract).grid(row=3, column=1)
-tk.Button(root, text="Multiply", command=multiply).grid(row=4, column=0)
-tk.Button(root, text="Divide", command=divide).grid(row=4, column=1)
+# Define button symbols
+button_symbols = [
+    ("7", 1, 0), ("8", 1, 1), ("9", 1, 2), ("/", 1, 3),
+    ("4", 2, 0), ("5", 2, 1), ("6", 2, 2), ("*", 2, 3),
+    ("1", 3, 0), ("2", 3, 1), ("3", 3, 2), ("-", 3, 3),
+    ("0", 4, 0), (".", 4, 1), ("=", 4, 2), ("+", 4, 3),
+    ("C", 5, 0)
+]
 
-# Button to clear input fields
-tk.Button(root, text="Clear", command=clear).grid(row=5, columnspan=2)
+# Create buttons
+for symbol, row, column in button_symbols:
+    button = tk.Button(root, text=symbol, font=("Arial", 18), padx=20, pady=20, command=lambda sym=symbol: button_click(sym))
+    button.grid(row=row, column=column)
 
+# Run the main loop
 root.mainloop()
